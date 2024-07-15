@@ -6,19 +6,21 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class game_Frame extends JFrame {
-     private JLabel scoreLable;
+     protected static JLabel scoreLable;
      
 
      game_panel gp=new game_panel();
+   public static int score=0;
      JPanel northPanel;
     public game_Frame()
     {    
          northPanel= new JPanel();
          northPanel.setLayout(new FlowLayout());
          scoreLable= new JLabel();
+
         
         scoreLable= new JLabel();
-        scoreLable.setText("Score: ");
+        scoreLable.setText("Score: "+score);
         scoreLable.setSize(400,300);
         scoreLable.setBackground(Color.BLACK);
         scoreLable.setForeground(Color.WHITE);
@@ -28,6 +30,7 @@ public class game_Frame extends JFrame {
       
         this.add(northPanel,BorderLayout.NORTH);
         this.add(gp,BorderLayout.CENTER);
+        this.setResizable(false);
         
         this.setTitle("Food Fight");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
