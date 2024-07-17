@@ -30,7 +30,7 @@ public class game_Frame extends JFrame {
       
         this.add(northPanel,BorderLayout.NORTH);
         this.add(gp,BorderLayout.CENTER);
-        this.setResizable(false);
+        //this.setResizable(false);
         
         this.setTitle("Food Fight");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

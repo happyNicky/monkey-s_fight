@@ -13,11 +13,14 @@ public class game_panel extends JPanel implements ActionListener,KeyListener {
 
     protected Image[] foods = new Image[10];
     protected Image[] predators = new Image[5];
+    protected int[] predatorsYposition = new int[5];
+    protected int[] predatorsXposition = new int[5];
     protected final int PANEL_HEIGHT = 500; 
     protected final int PANEL_WIDTH = 800; 
     protected int[] imageYposition = new int[10];
     protected int[] imageXposition = new int[10];
     protected JButton monkeyButton;
+  protected boolean Alife;
     int ySideIncrementer = 10;
 
     Timer timer;
@@ -49,7 +52,7 @@ public class game_panel extends JPanel implements ActionListener,KeyListener {
 
         instantiateImageArrays();
 
-        timer = new Timer(1, this); 
+        timer = new Timer(10, this); 
         timer.start();
 
 
@@ -59,14 +62,26 @@ public class game_panel extends JPanel implements ActionListener,KeyListener {
 
     public void instantiateImageArrays() {
     
-        int tempX=-150;
-        for (int i = 0; i < 10; i++) {
+        int tempX=-100;
+        int predatorTemp=-30;
+        // instantiate the foods array 
+        for (int i = 0; i < foods.length; i++) {
             foods[i] = new ImageIcon("food" + i + ".png").getImage();
             tempX +=foods[i].getWidth(null);
             imageXposition[i]= tempX;
             gl.randomYPosition(imageYposition,i);
+            gl.randomXPosition(imageXposition, i);
         }
-          // gl.randomYPosition(imageYposition,i);
+        // instantiate the predators array
+
+        for (int i = 0; i < predators.length; i++) {
+            predators[i] = new ImageIcon("predator" + i + ".png").getImage();
+            predatorTemp +=predators[i].getWidth(null)+40;
+            predatorsXposition[i]= predatorTemp;
+            gl.randomPredatorsYPosition(predatorsYposition,i);
+            gl.randomPredatorsXPosition(predatorsXposition, i);
+        }
+           
     }
 
     @Override
@@ -74,27 +89,44 @@ public class game_panel extends JPanel implements ActionListener,KeyListener {
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i <foods.length; i++) {
             g2d.drawImage(foods[i], imageXposition[i], imageYposition[i], null);
         }
-        gl.checkPoint(imageYposition, imageXposition, monkeyButton, foods);
-        this.setDoubleBuffered(true);
+        for (int i = 0; i <predators.length; i++) {
+            g2d.drawImage(predators[i], predatorsXposition[i], predatorsYposition[i], null);
+        }
 
+        gl.checkPoint(imageYposition, imageXposition, monkeyButton, foods);
+        Alife  =   gl.checkAlife(predatorsXposition, predatorsYposition, monkeyButton, predators);
+        this.setDoubleBuffered(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        // this is the animation for food images 
+        if(Alife){
         for (int i = 0; i < imageYposition.length; i++) {
             imageYposition[i] += yVelocity; 
             if (imageYposition[i] > PANEL_HEIGHT) {
                 gl.randomYPosition(imageYposition,i);
             }
         }
+              // this is the animation for predators images 
+            for (int j = 0; j < predatorsYposition.length; j++) {
+                predatorsYposition[j] += yVelocity; 
+                if (predatorsYposition[j] > PANEL_HEIGHT) {
+                    gl.randomYPosition(predatorsYposition,j);
+                }
+        }
+         }
       
         
-        repaint(); 
-        
+        repaint();
+
     }
+
+        
+    
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -117,11 +149,10 @@ public class game_panel extends JPanel implements ActionListener,KeyListener {
        else if(e.getKeyCode()==40)
        {
         monkeyButton.setLocation(x,y+10);
-        System.out.println(monkeyButton.getY());
+    
         if(monkeyButton.getY()>=400)
         {
             monkeyButton.setLocation(x,390);
-            System.out.println("out of down");
             
         }
        }
